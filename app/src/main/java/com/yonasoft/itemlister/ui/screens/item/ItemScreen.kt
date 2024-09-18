@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.yonasoft.itemlister.ui.screens
+package com.yonasoft.itemlister.ui.screens.item
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.yonasoft.itemlister.ui.screens.ItemScreen
+import com.yonasoft.itemlister.ui.screens.item.ItemScreen
 import com.yonasoft.itemlister.ui.theme.ItemListerTheme
 
 class MainActivity : ComponentActivity() {

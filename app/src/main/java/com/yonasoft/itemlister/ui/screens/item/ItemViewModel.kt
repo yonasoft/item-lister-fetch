@@ -1,4 +1,4 @@
-package com.yonasoft.itemlister.ui.screens
+package com.yonasoft.itemlister.ui.screens.item
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
