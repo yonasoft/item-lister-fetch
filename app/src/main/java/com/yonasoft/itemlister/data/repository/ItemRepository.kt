@@ -18,16 +18,4 @@ class ItemRepository {
 
         return emptyList()
     }
-    suspend fun getFilteredAndSortedItems(): List<Item> {
-        val response = RetrofitInstance.api.getItems()
-
-        if (response.isSuccessful) {
-            response.body()?.let { items ->
-                return items.filter { !it.name.isNullOrBlank() }
-                    .sortedWith(compareBy({ it.listId }, { it.name }))
-            }
-        }
-
-        return emptyList()
-    }
 }

@@ -3,10 +3,8 @@ package com.yonasoft.itemlister.ui.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
@@ -22,8 +20,12 @@ import com.yonasoft.itemlister.data.model.Item
 fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
     val items = viewModel.currentItems.value
 
-    var isSortedByName by remember { mutableStateOf(true) }
-    var filterOutNullAndEmpty by remember { mutableStateOf(true) }
+    var isSortedByName by rememberSaveable { mutableStateOf(true) }
+    var filterOutNullAndEmpty by rememberSaveable { mutableStateOf(true) }
+
+    LaunchedEffect(isSortedByName, filterOutNullAndEmpty) {
+        viewModel.applySortAndFilter(isSort = isSortedByName, isFilter = filterOutNullAndEmpty)
+    }
 
     Column(
         modifier = Modifier
@@ -31,11 +33,11 @@ fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .weight(1f),
+            contentAlignment = Alignment.Center
         ) {
             if (items.isEmpty()) {
                 CircularProgressIndicator(modifier = Modifier.size(64.dp))
@@ -99,7 +101,7 @@ fun ExpandableItemGroup(listId: Int, items: List<Item>) {
         if (expanded) {
             items.forEach { item ->
                 Column(modifier = Modifier.padding(8.dp)) {
-                    Text(text = "Item Name: ${item.name ?: "Unnamed Item"}")
+                    Text(text = "Item Name: ${item.name}")
                     Divider()
                 }
             }
