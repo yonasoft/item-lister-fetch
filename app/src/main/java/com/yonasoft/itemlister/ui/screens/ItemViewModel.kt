@@ -27,6 +27,18 @@ class ItemViewModel : ViewModel() {
         }
     }
 
+    fun searchItems(input: String) {
+        viewModelScope.launch(Dispatchers.Default) {
+            if (input.isNotEmpty()) {
+                currentItems.value = _items.value.filter {
+                    input in it.name ?: ""
+                }
+            } else {
+                currentItems.value = _items.value
+            }
+        }
+    }
+
     fun applySortAndFilter(isSort: Boolean, isFilter: Boolean) {
         val items = _items.value
         viewModelScope.launch(Dispatchers.Default) {
@@ -36,12 +48,12 @@ class ItemViewModel : ViewModel() {
             currentItems.value = updatedItems
         }
     }
+
     private fun sortItems(items: List<Item>): List<Item> {
         return items.sortedWith(compareBy({ it.listId }, { it.name }))
     }
 
-    private  fun filterNullAndEmptyItems(items: List<Item>): List<Item> {
+    private fun filterNullAndEmptyItems(items: List<Item>): List<Item> {
         return items.filter { !it.name.isNullOrBlank() }
     }
 }
-

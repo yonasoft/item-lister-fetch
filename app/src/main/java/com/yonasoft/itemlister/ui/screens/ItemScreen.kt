@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.yonasoft.itemlister.ui.screens
 
 import androidx.compose.foundation.clickable
@@ -20,11 +22,17 @@ import com.yonasoft.itemlister.data.model.Item
 fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
     val items = viewModel.currentItems.value
 
+    var searchInput by rememberSaveable {
+        mutableStateOf("")
+    }
     var isSortedByName by rememberSaveable { mutableStateOf(true) }
     var filterOutNullAndEmpty by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(isSortedByName, filterOutNullAndEmpty) {
         viewModel.applySortAndFilter(isSort = isSortedByName, isFilter = filterOutNullAndEmpty)
+    }
+    LaunchedEffect(searchInput) {
+        viewModel.searchItems(searchInput)
     }
 
     Column(
@@ -33,6 +41,16 @@ fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        SearchBar(
+            query = searchInput,
+            onQueryChange = { searchInput = it },
+            onSearch = {
+                //Handled in launch Eeffect
+            },
+            active = false,
+            onActiveChange = {}) {
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
