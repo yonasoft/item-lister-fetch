@@ -5,7 +5,6 @@ import com.yonasoft.itemlister.data.api.RetrofitInstance
 import com.yonasoft.itemlister.data.model.Item
 
 class ItemRepository {
-
     suspend fun getItems(): List<Item> {
         val response = RetrofitInstance.api.getItems()
 
