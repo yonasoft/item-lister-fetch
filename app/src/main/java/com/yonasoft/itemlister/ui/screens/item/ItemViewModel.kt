@@ -16,23 +16,26 @@ class ItemViewModel : ViewModel() {
     var currentItems = mutableStateOf(emptyList<Item>())
 
     init {
-        fetchItems()
+        initializeItems()
     }
 
-    private fun fetchItems() {
+    private fun initializeItems() {
         viewModelScope.launch(Dispatchers.IO) {
             val result = repository.getItems()
             _items.value = result
-            currentItems.value = result
+            searchAndApplySortAndFilter(searchInput = "", isSort = true, isFilter = true)
         }
     }
+
     fun searchAndApplySortAndFilter(searchInput: String, isSort: Boolean, isFilter: Boolean) {
         viewModelScope.launch(Dispatchers.Default) {
             var updatedItems = _items.value
 
-            if (searchInput.isNotEmpty()) updatedItems = updatedItems.filter { it.name?.contains(searchInput, ignoreCase = true) == true }
+            if (searchInput.isNotEmpty()) updatedItems =
+                updatedItems.filter { it.name?.contains(searchInput, ignoreCase = true) == true }
             if (isFilter) updatedItems = updatedItems.filter { !it.name.isNullOrBlank() }
-            if (isSort) updatedItems = updatedItems.sortedWith(compareBy({ it.listId }, { it.name }))
+            if (isSort) updatedItems =
+                updatedItems.sortedWith(compareBy({ it.listId }, { it.name }))
 
             currentItems.value = updatedItems
         }
