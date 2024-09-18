@@ -15,7 +15,6 @@ class ItemRepository {
                 return items
             }
         }
-
         return emptyList()
     }
 }

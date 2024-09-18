@@ -37,22 +37,4 @@ class ItemViewModel : ViewModel() {
             currentItems.value = updatedItems
         }
     }
-
-    fun applySortAndFilter(isSort: Boolean, isFilter: Boolean) {
-        val items = _items.value
-        viewModelScope.launch(Dispatchers.Default) {
-            var updatedItems = items
-            if (isSort) updatedItems = sortItems(updatedItems)
-            if (isFilter) updatedItems = filterNullAndEmptyItems(updatedItems)
-            currentItems.value = updatedItems
-        }
-    }
-
-    private fun sortItems(items: List<Item>): List<Item> {
-        return items.sortedWith(compareBy({ it.listId }, { it.name }))
-    }
-
-    private fun filterNullAndEmptyItems(items: List<Item>): List<Item> {
-        return items.filter { !it.name.isNullOrBlank() }
-    }
 }

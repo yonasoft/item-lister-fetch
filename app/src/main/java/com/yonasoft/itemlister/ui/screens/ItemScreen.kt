@@ -3,15 +3,35 @@
 package com.yonasoft.itemlister.ui.screens
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,17 +40,16 @@ import com.yonasoft.itemlister.data.model.Item
 
 @Composable
 fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
+
     val items = viewModel.currentItems.value
 
-    var searchInput by rememberSaveable {
-        mutableStateOf("")
-    }
+    var searchInput by rememberSaveable { mutableStateOf("") }
     var isSortedByName by rememberSaveable { mutableStateOf(true) }
     var filterOutNullAndEmpty by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(searchInput, isSortedByName, filterOutNullAndEmpty) {
         viewModel.searchAndApplySortAndFilter(
-            searchInput = searchInput
+            searchInput = searchInput,
             isSort = isSortedByName,
             isFilter = filterOutNullAndEmpty
         )
@@ -46,7 +65,7 @@ fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
             query = searchInput,
             onQueryChange = { searchInput = it },
             onSearch = {
-                //Handled in launch Eeffect
+                //Handled in launch Effect
             },
             active = false,
             onActiveChange = {}) {
@@ -62,7 +81,6 @@ fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
                 CircularProgressIndicator(modifier = Modifier.size(64.dp))
             } else {
                 val groupedItems = items
-                    .filter { !filterOutNullAndEmpty || !it.name.isNullOrBlank() }
                     .groupBy { it.listId }
                     .toSortedMap()
 
@@ -76,13 +94,14 @@ fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
                         item {
                             ExpandableItemGroup(
                                 listId = listId,
-                                items = if (isSortedByName) groupItems.sortedBy { it.name } else groupItems
+                                items = if (isSortedByName) groupItems else groupItems
                             )
                         }
                     }
                 }
             }
         }
+        Divider()
         Spacer(modifier = Modifier.height(16.dp))
         SortingAndFilteringControls(
             isSortedByName = isSortedByName,
@@ -115,6 +134,7 @@ fun ExpandableItemGroup(listId: Int, items: List<Item>) {
                 )
             }
         }
+
         Divider()
 
         if (expanded) {
@@ -136,6 +156,7 @@ fun SortingAndFilteringControls(
     onFilterChange: (Boolean) -> Unit
 ) {
     Column {
+
         Text("Sorting and Filtering Options")
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -160,14 +181,4 @@ fun SortingAndFilteringControls(
     }
 }
 
-@Composable
-fun Divider() {
-    Box(
-        modifier = Modifier
-            .height(1.dp)
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    ) {
-        Surface(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)) {}
-    }
-}
+
