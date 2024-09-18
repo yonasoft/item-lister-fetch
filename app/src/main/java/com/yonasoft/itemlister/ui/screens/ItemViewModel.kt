@@ -26,16 +26,15 @@ class ItemViewModel : ViewModel() {
             currentItems.value = result
         }
     }
-
-    fun searchItems(input: String) {
+    fun searchAndApplySortAndFilter(searchInput: String, isSort: Boolean, isFilter: Boolean) {
         viewModelScope.launch(Dispatchers.Default) {
-            if (input.isNotEmpty()) {
-                currentItems.value = _items.value.filter {
-                    input in it.name ?: ""
-                }
-            } else {
-                currentItems.value = _items.value
-            }
+            var updatedItems = _items.value
+
+            if (searchInput.isNotEmpty()) updatedItems = updatedItems.filter { it.name?.contains(searchInput, ignoreCase = true) == true }
+            if (isFilter) updatedItems = updatedItems.filter { !it.name.isNullOrBlank() }
+            if (isSort) updatedItems = updatedItems.sortedWith(compareBy({ it.listId }, { it.name }))
+
+            currentItems.value = updatedItems
         }
     }
 

@@ -28,11 +28,12 @@ fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
     var isSortedByName by rememberSaveable { mutableStateOf(true) }
     var filterOutNullAndEmpty by rememberSaveable { mutableStateOf(true) }
 
-    LaunchedEffect(isSortedByName, filterOutNullAndEmpty) {
-        viewModel.applySortAndFilter(isSort = isSortedByName, isFilter = filterOutNullAndEmpty)
-    }
-    LaunchedEffect(searchInput) {
-        viewModel.searchItems(searchInput)
+    LaunchedEffect(searchInput, isSortedByName, filterOutNullAndEmpty) {
+        viewModel.searchAndApplySortAndFilter(
+            searchInput = searchInput
+            isSort = isSortedByName,
+            isFilter = filterOutNullAndEmpty
+        )
     }
 
     Column(
