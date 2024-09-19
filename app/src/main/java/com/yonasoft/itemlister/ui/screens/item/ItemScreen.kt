@@ -47,7 +47,7 @@ fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
     var filterOutNullAndEmpty by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(searchInput, isSortedByName, filterOutNullAndEmpty) {
-        viewModel.searchAndApplySortAndFilter(
+        viewModel.launchSearchSortAndFilter(
             searchInput = searchInput,
             isSort = isSortedByName,
             isFilter = filterOutNullAndEmpty

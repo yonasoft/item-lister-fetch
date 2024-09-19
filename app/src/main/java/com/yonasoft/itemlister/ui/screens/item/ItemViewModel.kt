@@ -8,12 +8,13 @@ import com.yonasoft.itemlister.data.repository.ItemRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ItemViewModel : ViewModel() {
     private val repository = ItemRepository()
 
     private val _items = MutableStateFlow<List<Item>>(emptyList())
-    var currentItems = mutableStateOf(emptyList<Item>())
+    val currentItems = mutableStateOf(emptyList<Item>())
 
     init {
         initializeItems()
@@ -23,22 +24,34 @@ class ItemViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val result = repository.getItems()
             _items.value = result
-            searchAndApplySortAndFilter(searchInput = "", isSort = true, isFilter = true)
+
+            withContext(Dispatchers.Default) {
+                searchSortAndFilter(searchInput = "", isSort = true, isFilter = true)
+            }
         }
     }
 
-    fun searchAndApplySortAndFilter(searchInput: String, isSort: Boolean, isFilter: Boolean) {
+    fun launchSearchSortAndFilter(searchInput: String, isSort: Boolean, isFilter: Boolean) {
         viewModelScope.launch(Dispatchers.Default) {
-            var updatedItems = _items.value
-
-            if (searchInput.isNotEmpty())
-                updatedItems = updatedItems.filter { it.name?.contains(searchInput, ignoreCase = true) == true }
-            if (isFilter)
-                updatedItems = updatedItems.filter { !it.name.isNullOrBlank() }
-            if (isSort)
-                updatedItems = updatedItems.sortedWith(compareBy({ it.listId }, { it.name }))
-
-            currentItems.value = updatedItems
+            searchSortAndFilter(searchInput = searchInput, isSort = isSort, isFilter = isFilter)
         }
+    }
+
+    private fun searchSortAndFilter(searchInput: String, isSort: Boolean, isFilter: Boolean) {
+        var updatedItems = _items.value
+
+        if (searchInput.isNotEmpty())
+            updatedItems = updatedItems.filter {
+                it.name?.contains(
+                    searchInput,
+                    ignoreCase = true
+                ) == true
+            }
+        if (isFilter)
+            updatedItems = updatedItems.filter { !it.name.isNullOrBlank() }
+        if (isSort)
+            updatedItems = updatedItems.sortedWith(compareBy({ it.listId }, { it.name }))
+
+        currentItems.value = updatedItems
     }
 }
