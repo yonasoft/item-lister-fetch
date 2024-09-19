@@ -40,7 +40,6 @@ import com.yonasoft.itemlister.data.model.Item
 
 @Composable
 fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
-
     val items = viewModel.currentItems.value
 
     var searchInput by rememberSaveable { mutableStateOf("") }
@@ -65,7 +64,7 @@ fun ItemScreen(viewModel: ItemViewModel = viewModel()) {
             query = searchInput,
             onQueryChange = { searchInput = it },
             onSearch = {
-                //Handled in launch Effect
+                //Handled in launch effect
             },
             active = false,
             onActiveChange = {}) {

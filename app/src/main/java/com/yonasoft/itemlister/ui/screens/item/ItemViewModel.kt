@@ -31,11 +31,12 @@ class ItemViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.Default) {
             var updatedItems = _items.value
 
-            if (searchInput.isNotEmpty()) updatedItems =
-                updatedItems.filter { it.name?.contains(searchInput, ignoreCase = true) == true }
-            if (isFilter) updatedItems = updatedItems.filter { !it.name.isNullOrBlank() }
-            if (isSort) updatedItems =
-                updatedItems.sortedWith(compareBy({ it.listId }, { it.name }))
+            if (searchInput.isNotEmpty())
+                updatedItems = updatedItems.filter { it.name?.contains(searchInput, ignoreCase = true) == true }
+            if (isFilter)
+                updatedItems = updatedItems.filter { !it.name.isNullOrBlank() }
+            if (isSort)
+                updatedItems = updatedItems.sortedWith(compareBy({ it.listId }, { it.name }))
 
             currentItems.value = updatedItems
         }
