@@ -50,8 +50,11 @@ class ItemViewModel : ViewModel() {
         if (isFilter)
             updatedItems = updatedItems.filter { !it.name.isNullOrBlank() }
         if (isSort)
-            updatedItems = updatedItems.sortedWith(compareBy({ it.listId }, { it.name }))
-
+//          updatedItems = updatedItems.sortedWith(compareBy({ it.listId }, { it.name }))
+            updatedItems = updatedItems.sortedWith(compareBy({ it.listId }, {
+                it.name?.drop(5)
+                    ?.toInt()
+            }))
         currentItems.value = updatedItems
     }
 }
